@@ -72,7 +72,7 @@ function getBestMove() {
   return bestMove;
 }
 
-function minimax(board, depth, isMaximizing) {
+function minimax(board, depth, isMaximizing, alpha, beta) {
   const scores = {
     X: -1,
     O: 1,
@@ -93,10 +93,14 @@ function minimax(board, depth, isMaximizing) {
     for (let i = 0; i < 9; i++) {
       if (board[i] === '') {
         board[i] = aiPlayer;
-        const score = minimax(board, depth + 1, false);
+        const score = minimax(board, depth + 1, false, alpha, beta);
         board[i] = '';
 
         bestScore = Math.max(score, bestScore);
+        alpha = Math.max(alpha, bestScore);
+        if (beta <= alpha) {
+          break;
+        }
       }
     }
 
@@ -107,10 +111,14 @@ function minimax(board, depth, isMaximizing) {
     for (let i = 0; i < 9; i++) {
       if (board[i] === '') {
         board[i] = 'X';
-        const score = minimax(board, depth + 1, true);
+        const score = minimax(board, depth + 1, true, alpha, beta);
         board[i] = '';
 
         bestScore = Math.min(score, bestScore);
+        beta = Math.min(beta, bestScore);
+        if (beta <= alpha) {
+          break;
+        }
       }
     }
     return bestScore;
